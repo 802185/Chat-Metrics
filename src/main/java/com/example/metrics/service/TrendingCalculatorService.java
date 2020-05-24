@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.TreeMap;
 import java.lang.Math;
 
 
-import com.example.metrics.model.Message;
+import com.example.metrics.model.*;
 import org.springframework.stereotype.Service;
 
 
@@ -28,12 +28,15 @@ public class TrendingCalculatorService {
 
     private Map<String, Integer> sentFromCount;
 
+    private TrendingResponse trendingResponse;
+
 
     public TrendingCalculatorService() {
         messagePopulation = new ArrayList<Message>();
         wordCount = new HashMap<String, Integer>();
         sentToCount = new HashMap<String, Integer>();
         sentFromCount = new HashMap<String, Integer>();
+        trendingResponse = new TrendingResponse();
     }
 
 
@@ -50,6 +53,7 @@ public class TrendingCalculatorService {
             wordScores.put(currentWord, currentWordScore);
 
         }
+
 
         resultSet.add(wordScores);
 
@@ -80,6 +84,59 @@ public class TrendingCalculatorService {
 
 
         return resultSet;
+    }
+
+
+    public TrendingResponse calculateResults() {
+
+        Map<String, Double> wordScores = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : wordCount.entrySet()) {
+
+            String currentWord = entry.getKey();
+            double currentWordScore = calculateZScore(currentWord, wordCount);
+
+            wordScores.put(currentWord, currentWordScore);
+
+        }
+
+        trendingResponse.setWordScores(wordScores);
+        
+
+        
+        Map<String, Double> senderScores = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : sentToCount.entrySet()) {
+
+            String currentWord = entry.getKey();
+            double currentWordScore = calculateZScore(currentWord, sentToCount);
+
+
+            senderScores.put(currentWord, currentWordScore);
+
+        }
+
+        trendingResponse.setSenderScores(senderScores);
+        
+
+
+        Map<String, Double> receiverScores = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : sentFromCount.entrySet()) {
+
+            String currentWord = entry.getKey();
+            double currentWordScore = calculateZScore(currentWord, sentFromCount);
+
+            receiverScores.put(currentWord, currentWordScore);
+
+        }
+
+        trendingResponse.setReceiverScores(receiverScores);
+
+        
+        trendingResponse.setWordCount(wordCount);
+        trendingResponse.setSentToCount(sentToCount);
+        trendingResponse.setSentFromCount(sentFromCount);
+
+        return trendingResponse;
+        
     }
 
 

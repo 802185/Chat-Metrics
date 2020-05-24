@@ -1,6 +1,6 @@
 package com.example.metrics.component;
 
-import com.example.metrics.model.Message;
+import com.example.metrics.model.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import com.example.metrics.service.TrendingCalculatorService;
@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.TreeMap;
+
 
 @Component
 public class RabbitMQMessageReceiver {
@@ -30,7 +32,8 @@ public class RabbitMQMessageReceiver {
       System.out.println(m.size());
       trendingCalculatorService.receiveMessage(m);
 
-      List<Map<String, Double>> results = trendingCalculatorService.calculateZScores();
+      // List<Map<String, Double>> results = trendingCalculatorService.calculateZScores();
+      TrendingResponse results  = trendingCalculatorService.calculateResults(); 
 
       System.out.println(results);
 
