@@ -26,11 +26,9 @@ public class RabbitMQMessageReceiver {
 
     @RabbitListener(queues="${metrics.rabbitmq.queue}", containerFactory = "listenerFactory")
     public void receiveMessage(List<Message> m) throws Exception {
-      System.out.println(m.size());
       trendingCalculatorService.receiveMessage(m);
-
       TrendingResponse results  = trendingCalculatorService.calculateResults();
-
+      System.out.println(results);
       rabbitTemplate.convertAndSend(exchange, trendingKey, results);
     }
 }

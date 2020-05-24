@@ -1,27 +1,18 @@
 package com.example.metrics.service;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.TreeMap;
 import java.util.LinkedHashMap;
 import java.lang.Math;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-
 import com.example.metrics.model.*;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
 public class TrendingCalculatorService {
-
-//    public static final String RECEIVE_METHOD_NAME = "receiveMessage";
 
     private List<Message> messagePopulation;
 
@@ -117,7 +108,6 @@ public class TrendingCalculatorService {
                                                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
                                                                           (e1, e2) -> e1, LinkedHashMap::new));
         trendingResponse.setWordScores(sortedWordScores);
-        
 
         
         Map<String, Double> senderScores = new HashMap<>();
@@ -137,7 +127,6 @@ public class TrendingCalculatorService {
                                                                           (e1, e2) -> e1, LinkedHashMap::new));
         trendingResponse.setSenderScores(sortedSenderScores);
         
-
 
         Map<String, Double> receiverScores = new HashMap<>();
         for (Map.Entry<String, Integer> entry : sentFromCount.entrySet()) {
@@ -229,7 +218,6 @@ public class TrendingCalculatorService {
             }
         }
 
-
         return map;
     }
 
@@ -248,33 +236,9 @@ public class TrendingCalculatorService {
 
             messagePopulation.add(m);
         }
-
-        // System.out.println("########################");
-        // System.out.println("wordCount:");
-        // wordCount.entrySet().forEach(entry->{
-        //     System.out.println(entry.getKey() + " " + entry.getValue());  
-        // });
-        
-        // System.out.println("########################");
-        // System.out.println("sentToCount:");
-        // sentToCount.entrySet().forEach(entry->{
-        //     System.out.println(entry.getKey() + " " + entry.getValue());  
-        // });
-        
-        // System.out.println("########################");
-        // System.out.println("sentFromCount:");
-        // sentFromCount.entrySet().forEach(entry->{
-        //     System.out.println(entry.getKey() + " " + entry.getValue());  
-        // });
-
     }
 
     public void receiveMessage(Message m) {
-
-        // System.out.println(m.getBody());
-        // System.out.println(m.getSent_from());
-        // System.out.println(m.getSent_to());
-
         String body = m.getBody().toLowerCase();
         String from = m.getSent_from().toLowerCase();
         String to = m.getSent_to().toLowerCase();
@@ -284,25 +248,5 @@ public class TrendingCalculatorService {
         sentFromCount = countWords(to, sentFromCount, false);
 
         messagePopulation.add(m);
-
-
-        // System.out.println("########################");
-        // System.out.println("wordCount:");
-        // wordCount.entrySet().forEach(entry->{
-        //     System.out.println(entry.getKey() + " " + entry.getValue());  
-        // });
-        
-        // System.out.println("########################");
-        // System.out.println("sentToCount:");
-        // sentToCount.entrySet().forEach(entry->{
-        //     System.out.println(entry.getKey() + " " + entry.getValue());  
-        // });
-        
-        // System.out.println("########################");
-        // System.out.println("sentFromCount:");
-        // sentFromCount.entrySet().forEach(entry->{
-        //     System.out.println(entry.getKey() + " " + entry.getValue());  
-        // });
-
     }
 }
