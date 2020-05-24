@@ -79,7 +79,7 @@ public class RabbitMQConfig {
         factory.setMissingQueuesFatal(false);
         factory.setBatchListener(true); //Listener works in batches of specified size.
         factory.setConsumerBatchEnabled(true);
-        factory.setBatchSize(5);
+        factory.setBatchSize(1);
         return factory;
     }
 }

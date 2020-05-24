@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeMap;
+import java.util.LinkedHashMap;
 import java.lang.Math;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 
 import com.example.metrics.model.*;
@@ -87,6 +90,15 @@ public class TrendingCalculatorService {
     }
 
 
+    public Map<String, Double> sortMapByValue(Map<String, Double> map) {
+        Map<String, Double> sortedMap = new HashMap<>();
+        map.entrySet().stream()
+                        .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
+                        .forEach(k -> sortedMap.put(k.getKey() , k.getValue()));
+
+        return sortedMap;
+    }
+
     public TrendingResponse calculateResults() {
 
         Map<String, Double> wordScores = new HashMap<>();
@@ -99,7 +111,12 @@ public class TrendingCalculatorService {
 
         }
 
-        trendingResponse.setWordScores(wordScores);
+
+        Map<String, Double> sortedWordScores = wordScores.entrySet().stream()
+                                                .sorted(Entry.<String, Double>comparingByValue().reversed())
+                                                .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
+                                                                          (e1, e2) -> e1, LinkedHashMap::new));
+        trendingResponse.setWordScores(sortedWordScores);
         
 
         
@@ -114,7 +131,11 @@ public class TrendingCalculatorService {
 
         }
 
-        trendingResponse.setSenderScores(senderScores);
+        Map<String, Double> sortedSenderScores = senderScores.entrySet().stream()
+                                                .sorted(Entry.<String, Double>comparingByValue().reversed())
+                                                .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
+                                                                          (e1, e2) -> e1, LinkedHashMap::new));
+        trendingResponse.setSenderScores(sortedSenderScores);
         
 
 
@@ -128,9 +149,14 @@ public class TrendingCalculatorService {
 
         }
 
-        trendingResponse.setReceiverScores(receiverScores);
+        Map<String, Double> sortedReceiverScores = receiverScores.entrySet().stream()
+                                                .sorted(Entry.<String, Double>comparingByValue().reversed())
+                                                .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
+                                                                          (e1, e2) -> e1, LinkedHashMap::new));
 
-        
+        trendingResponse.setReceiverScores(sortedReceiverScores);
+
+
         trendingResponse.setWordCount(wordCount);
         trendingResponse.setSentToCount(sentToCount);
         trendingResponse.setSentFromCount(sentFromCount);
