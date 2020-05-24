@@ -77,6 +77,9 @@ public class RabbitMQConfig {
         factory.setMessageConverter(jsonMessageConverter());
         factory.setDefaultRequeueRejected(false);
         factory.setMissingQueuesFatal(false);
+        factory.setBatchListener(true); //Listener works in batches of specified size.
+        factory.setConsumerBatchEnabled(true);
+        factory.setBatchSize(5);
         return factory;
     }
 }

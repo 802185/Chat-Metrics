@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import java.lang.Math;
 
@@ -58,6 +59,7 @@ public class TrendingCalculatorService {
             String currentWord = entry.getKey();
             double currentWordScore = calculateZScore(currentWord, sentToCount);
 
+
             sentScores.put(currentWord, currentWordScore);
 
         }
@@ -99,6 +101,7 @@ public class TrendingCalculatorService {
         List<Double> stdList = new ArrayList<Double>();
         double stdSumPopulation = (double) 0;
 
+
         for (Map.Entry<String, Integer> entry : population.entrySet()) {
 
             String currentWord = entry.getKey();
@@ -106,11 +109,17 @@ public class TrendingCalculatorService {
 
             double std = Math.pow(currentWordCount - averagePopulation, 2);
 
+
             stdList.add(std);
             stdSumPopulation = stdSumPopulation + std;
         }
 
         double stdPopulation = Math.sqrt(stdSumPopulation / populationSize);
+
+
+        if (stdPopulation == 0) {
+            return (double) 0;
+        } 
 
         return ((population.get(word) - averagePopulation) / stdPopulation);
     }
@@ -141,6 +150,42 @@ public class TrendingCalculatorService {
         return map;
     }
 
+
+    public void receiveMessage(List<Message> messageList) {
+
+
+        for (Message m : messageList) {
+            String body = m.getBody().toLowerCase();
+            String from = m.getSent_from().toLowerCase();
+            String to = m.getSent_to().toLowerCase();
+
+            wordCount = countWords(body, wordCount, true);
+            sentToCount = countWords(from, sentToCount, false);
+            sentFromCount = countWords(to, sentFromCount, false);
+
+            messagePopulation.add(m);
+        }
+
+        // System.out.println("########################");
+        // System.out.println("wordCount:");
+        // wordCount.entrySet().forEach(entry->{
+        //     System.out.println(entry.getKey() + " " + entry.getValue());  
+        // });
+        
+        // System.out.println("########################");
+        // System.out.println("sentToCount:");
+        // sentToCount.entrySet().forEach(entry->{
+        //     System.out.println(entry.getKey() + " " + entry.getValue());  
+        // });
+        
+        // System.out.println("########################");
+        // System.out.println("sentFromCount:");
+        // sentFromCount.entrySet().forEach(entry->{
+        //     System.out.println(entry.getKey() + " " + entry.getValue());  
+        // });
+
+    }
+
     public void receiveMessage(Message m) {
 
         // System.out.println(m.getBody());
@@ -158,26 +203,23 @@ public class TrendingCalculatorService {
         messagePopulation.add(m);
 
 
-        System.out.println("########################");
-        System.out.println("wordCount:");
-        wordCount.entrySet().forEach(entry->{
-            System.out.println(entry.getKey() + " " + entry.getValue());  
-        });
+        // System.out.println("########################");
+        // System.out.println("wordCount:");
+        // wordCount.entrySet().forEach(entry->{
+        //     System.out.println(entry.getKey() + " " + entry.getValue());  
+        // });
         
-        System.out.println("########################");
-        System.out.println("sentToCount:");
-        sentToCount.entrySet().forEach(entry->{
-            System.out.println(entry.getKey() + " " + entry.getValue());  
-        });
+        // System.out.println("########################");
+        // System.out.println("sentToCount:");
+        // sentToCount.entrySet().forEach(entry->{
+        //     System.out.println(entry.getKey() + " " + entry.getValue());  
+        // });
         
-        System.out.println("########################");
-        System.out.println("sentFromCount:");
-        sentFromCount.entrySet().forEach(entry->{
-            System.out.println(entry.getKey() + " " + entry.getValue());  
-        });
-
-//        Map<String,Object> map = new HashMap<>();
-//        map.put(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
+        // System.out.println("########################");
+        // System.out.println("sentFromCount:");
+        // sentFromCount.entrySet().forEach(entry->{
+        //     System.out.println(entry.getKey() + " " + entry.getValue());  
+        // });
 
     }
 }
