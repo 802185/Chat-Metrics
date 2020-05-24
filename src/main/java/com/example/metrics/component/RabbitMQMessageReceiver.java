@@ -2,6 +2,7 @@ package com.example.metrics.component;
 
 import com.example.metrics.model.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.example.metrics.service.TrendingCalculatorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import java.util.TreeMap;
 
 @Component
 public class RabbitMQMessageReceiver {
+
+    @Value("${metrics.rabbitmq.topics.trending}")
+    private String trendingTopic;
 
     @Autowired
     private TrendingCalculatorService trendingCalculatorService;
@@ -44,8 +48,8 @@ public class RabbitMQMessageReceiver {
       }  catch (Exception e) {
         throw new Exception("Can't convert to json: ", e);
       }
-      
-      op.convertAndSend("/topic/metrics.trending", jsonResponse);
+
+      op.convertAndSend("/topic/"+trendingTopic, jsonResponse);
 
     }
 }
